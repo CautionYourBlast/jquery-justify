@@ -91,14 +91,21 @@
     }
 
     container.hide();
-    images.on('load', function(e) {
+
+    function imageLoaded() {
       if (++loaded === images.length) {
         layout();
       }
-    }).on('error', function() {
-      if (++loaded === images.length) {
-        layout();
-      }
+    }
+
+    images.one('load', function() {
+      imageLoaded();
+    }).one('error', function() {
+      imageLoaded();
+    }).each(function() {
+      this.complete && imageLoaded();
     });
+
+    return this;
   };
 })(jQuery);
